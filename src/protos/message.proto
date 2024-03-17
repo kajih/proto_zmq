@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+message MessageBroadcast {
+  string sender = 1;
+  string message = 2;
+  uint64 time = 3;
+}
+
