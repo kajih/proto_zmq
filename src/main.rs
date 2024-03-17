@@ -1,5 +1,5 @@
 use std::{
-    io,
+    io::{self, BufRead, Write},
     time::{SystemTime, UNIX_EPOCH},
 };
 
@@ -32,13 +32,18 @@ fn start_server(port: u32) -> Result<(), zmq::Error> {
 
     println!("Setting up server at:[{}]", &bind_address);
 
-    print!("Enter :");
     let mut input = String::new();
+    let mut handle = io::stdin().lock();
 
     loop {
         input.clear();
 
-        let Ok(_) = io::stdin().read_line(&mut input) else {
+        print!("Enter :");
+        if let Err(e) = io::stdout().flush() {
+            println!("Stdout::flush error {}", e);
+        }
+
+        let Ok(_) = handle.read_line(&mut input) else {
             println!("Read Line failed");
             break;
         };
@@ -100,12 +105,12 @@ fn main() {
 
     if let Some(address) = args.address {
         match start_client(address, args.port) {
-            Ok(_) => println!("Client finieshed OK"),
+            Ok(_) => println!("Client finished OK"),
             Err(e) => println!("Client error {}", e),
         }
     } else {
         match start_server(args.port) {
-            Ok(_) => println!("Server finieshed OK"),
+            Ok(_) => println!("Server finished OK"),
             Err(e) => println!("Server error {}", e),
         }
     }
