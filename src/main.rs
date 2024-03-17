@@ -17,10 +17,10 @@ include!(concat!(env!("OUT_DIR"), "/protos/mod.rs"));
 #[command(version, about, long_about = None)]
 struct Args {
     /// Remote address, if no address act as server
-    #[arg(short)]
+    #[arg(index = 1, value_name = "ADDRESS")]
     address: Option<String>,
     /// Server port
-    #[arg(short, default_value_t = 9800)]
+    #[arg(short, long, value_name = "PORT", default_value_t = 9800)]
     port: u32,
 }
 
@@ -97,6 +97,7 @@ fn start_client(address: String, port: u32) -> Result<(), zmq::Error> {
 
 fn main() {
     let args = Args::parse();
+
     if let Some(address) = args.address {
         match start_client(address, args.port) {
             Ok(_) => println!("Client finieshed OK"),
